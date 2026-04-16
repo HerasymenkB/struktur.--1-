@@ -35,21 +35,33 @@ function useGraphAnimation<T extends HTMLElement | SVGElement>() {
   useEffect(() => {
     if (!ref.current || isTriggered) return;
 
+    // ONE trigger function for both cases
+    const triggerAnimation = () => {
+      setIsTriggered(true);
+    };
+
+    // 1. Detect initial visibility on load securely
+    const rect = ref.current.getBoundingClientRect();
+    // If the top of the element is inside the screen (or above it during a reload layout)
+    if (rect.top < window.innerHeight * 0.95) {
+      triggerAnimation();
+      return;
+    }
+
+    // 2. If NOT visible initially, attach IntersectionObserver
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-            const rect = entry.boundingClientRect;
-            if (rect.top < window.innerHeight * 0.8) {
-              setIsTriggered(true);
-              observer.disconnect();
-            }
+          // Trigger earlier as soon as 15% of the graph breaches the viewport
+          if (entry.isIntersecting) {
+            triggerAnimation();
+            observer.disconnect();
           }
         });
       },
       {
-        threshold: 0.5,
-        rootMargin: "0px 0px -20% 0px"
+        threshold: 0.15,
+        rootMargin: "0px 0px 0px 0px"
       }
     );
 
@@ -141,9 +153,14 @@ const Navbar = ({ lang, setLang }: { lang: Language, setLang: (l: Language) => v
             </div>
 
             {/* Desktop CTA */}
-            <button className="hidden md:block bg-brand-dark text-white px-6 py-2.5 rounded-full text-xs font-bold hover:opacity-90 transition-opacity">
+            <a 
+              href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:block bg-brand-dark text-white px-6 py-2.5 rounded-full text-xs font-bold hover:opacity-90 transition-opacity inline-block text-center"
+            >
               {t.cta}
-            </button>
+            </a>
 
             {/* Mobile Menu Toggle */}
             <button 
@@ -188,9 +205,14 @@ const Navbar = ({ lang, setLang }: { lang: Language, setLang: (l: Language) => v
                 </button>
               </div>
 
-              <button className="w-full bg-brand-dark text-white py-4 rounded-full text-sm font-bold">
+              <a 
+                href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-brand-dark text-white py-4 rounded-full text-sm font-bold block text-center"
+              >
                 {t.cta}
-              </button>
+              </a>
             </motion.div>
           )}
         </AnimatePresence>
@@ -235,9 +257,14 @@ const Hero = ({ lang }: { lang: Language }) => {
           transition={{ delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-24 md:mb-24"
         >
-          <button className="bg-brand-dark text-white px-8 py-4 rounded-full font-medium hover:opacity-90 transition-opacity w-full sm:w-auto">
+          <a 
+            href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-brand-dark text-white px-8 py-4 rounded-full font-medium hover:opacity-90 transition-opacity w-full sm:w-auto inline-block text-center"
+          >
             {t.ctaPrimary}
-          </button>
+          </a>
           <Link to="/presentation" className="bg-white text-black px-8 py-4 rounded-full font-medium border border-black/5 hover:bg-black/5 transition-colors w-full sm:w-auto text-center">
             {t.ctaSecondary}
           </Link>
@@ -634,9 +661,14 @@ const Pricing = ({ lang }: { lang: Language }) => {
                   </li>
                 ))}
               </ul>
-              <button className={`w-full py-4 rounded-full border ${i === 1 ? 'bg-white text-black border-transparent hover:opacity-90' : 'border-black/10 hover:bg-black/5'} font-bold text-xs md:text-sm transition-all`}>
+              <a 
+                href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services."
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`w-full py-4 rounded-full border ${i === 1 ? 'bg-white text-black border-transparent hover:opacity-90' : 'border-black/10 hover:bg-black/5'} font-bold text-xs md:text-sm transition-all block text-center`}
+              >
                 {pkg.cta}
-              </button>
+              </a>
             </div>
           ))}
         </div>
@@ -655,12 +687,22 @@ const FinalCTA = ({ lang }: { lang: Language }) => {
         <p className="text-white/40 text-sm md:text-lg mb-10 md:mb-12">{t.subtitle}</p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button className="bg-white text-black px-10 py-5 rounded-full font-bold hover:opacity-90 transition-opacity w-full sm:w-auto">
+          <a 
+            href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white text-black px-10 py-5 rounded-full font-bold hover:opacity-90 transition-opacity w-full sm:w-auto inline-block text-center"
+          >
             {t.primary}
-          </button>
-          <button className="bg-white/10 backdrop-blur-md text-white px-10 py-5 rounded-full font-bold hover:bg-white/20 transition-colors w-full sm:w-auto">
+          </a>
+          <a 
+            href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white/10 backdrop-blur-md text-white px-10 py-5 rounded-full font-bold hover:bg-white/20 transition-colors w-full sm:w-auto inline-block text-center"
+          >
             {t.secondary}
-          </button>
+          </a>
         </div>
       </div>
     </section>

@@ -28,50 +28,45 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import * as Slides from './components/PresentationSlides';
 import { translations, Language } from './translations';
 
+function useGraphAnimation<T extends HTMLElement | SVGElement>() {
+  const [isTriggered, setIsTriggered] = useState(false);
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    if (!ref.current || isTriggered) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            const rect = entry.boundingClientRect;
+            if (rect.top < window.innerHeight * 0.8) {
+              setIsTriggered(true);
+              observer.disconnect();
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.5,
+        rootMargin: "0px 0px -20% 0px"
+      }
+    );
+
+    observer.observe(ref.current);
+
+    return () => observer.disconnect();
+  }, [isTriggered]);
+
+  return { ref, isTriggered };
+}
+
 const Counter = ({ value, duration = 1.2 }: { value: string, duration?: number }) => {
   const [displayValue, setDisplayValue] = useState('0');
+  const { ref, isTriggered } = useGraphAnimation<HTMLSpanElement>();
   
   useEffect(() => {
-    const isPercentage = value.includes('%');
-    const isScore = value.includes('/');
-    const isPlus = value.startsWith('+');
-    const isSeconds = value.endsWith('s');
-    
-    let numericValue = parseFloat(value.replace(/[^\d.-]/g, ''));
-    if (isNaN(numericValue)) numericValue = 0;
-
-    const controls = animate(0, numericValue, {
-      duration,
-      ease: "easeOut",
-      onUpdate: (latest) => {
-        let formatted = '';
-        if (isPercentage) {
-          formatted = latest.toFixed(1) + '%';
-        } else if (isSeconds) {
-          formatted = latest.toFixed(1) + 's';
-        } else if (isScore) {
-          formatted = Math.round(latest) + ' / 100';
-        } else if (isPlus) {
-          formatted = '+' + Math.round(latest);
-        } else {
-          formatted = Math.round(latest).toString();
-        }
-        setDisplayValue(formatted);
-      }
-    });
-    return () => controls.stop();
-  }, [value, duration]);
-
-  return <span>{displayValue}</span>;
-};
-
-const ScrollCounter = ({ value, duration = 1.2 }: { value: string, duration?: number }) => {
-  const [displayValue, setDisplayValue] = useState('0');
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.5 });
-  
-  useEffect(() => {
-    if (!isInView) return;
+    if (!isTriggered) return;
 
     const isPercentage = value.includes('%');
     const isScore = value.includes('/');
@@ -101,10 +96,12 @@ const ScrollCounter = ({ value, duration = 1.2 }: { value: string, duration?: nu
       }
     });
     return () => controls.stop();
-  }, [value, duration, isInView]);
+  }, [value, duration, isTriggered]);
 
   return <span ref={ref}>{displayValue}</span>;
 };
+
+const ScrollCounter = Counter;
 
 const Navbar = ({ lang, setLang }: { lang: Language, setLang: (l: Language) => void }) => {
   const t = translations[lang].nav;
@@ -205,6 +202,7 @@ const Navbar = ({ lang, setLang }: { lang: Language, setLang: (l: Language) => v
 const Hero = ({ lang }: { lang: Language }) => {
   const t = translations[lang].hero;
   const g = translations[lang].graphic;
+  const { ref: graphRef, isTriggered } = useGraphAnimation<HTMLDivElement>();
   return (
     <section className="pt-32 md:pt-40 pb-16 md:pb-24 px-6 relative">
       <div className="max-w-6xl mx-auto text-center">
@@ -278,12 +276,12 @@ const Hero = ({ lang }: { lang: Language }) => {
                 </span>
               </div>
               <div className="border border-[#E5E5E5] rounded-[12px] md:rounded-[16px] p-6 md:p-10">
-                <div className="flex items-end gap-2 md:gap-3 h-32 md:h-40">
+                <div className="flex items-end gap-2 md:gap-3 h-32 md:h-40" ref={graphRef}>
                   {[40, 60, 45, 70, 55, 85, 100, 110].map((height, i) => (
                     <motion.div 
                       key={i} 
                       initial={{ height: 0 }}
-                      animate={{ height: `${height}%` }}
+                      animate={{ height: isTriggered ? `${height}%` : 0 }}
                       transition={{ 
                         duration: 0.8, 
                         delay: 0.6 + (i * 0.05),
@@ -474,6 +472,7 @@ const Services = ({ lang }: { lang: Language }) => {
 
 const Process = ({ lang }: { lang: Language }) => {
   const t = translations[lang].process;
+  const { ref: pathRef, isTriggered } = useGraphAnimation<HTMLDivElement>();
   return (
     <section id="process" className="py-16 md:py-24 px-6">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 md:gap-16 items-start">
@@ -502,23 +501,23 @@ const Process = ({ lang }: { lang: Language }) => {
           <div className="absolute top-6 md:top-10 left-0 right-0 text-[9px] md:text-[10px] font-bold text-black/30 uppercase tracking-widest text-center">{t.chartLabel}</div>
           
           <div className="w-full flex flex-col gap-8 md:gap-12 mt-6 md:mt-8">
-            <div className="relative h-48 md:h-64 w-full">
+            <div className="relative h-48 md:h-64 w-full" ref={pathRef}>
               <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
                 <motion.path
                   d="M 0 35 Q 25 32, 50 20 T 100 5"
                   fill="none"
                   stroke="#111111"
                   strokeWidth="1.5"
-                  initial={{ pathLength: 0 }}
-                  whileInView={{ pathLength: 1 }}
-                  viewport={{ once: true, amount: 0.5 }}
+                  pathLength={1}
+                  strokeDasharray="1 1"
+                  initial={{ strokeDashoffset: 1 }}
+                  animate={{ strokeDashoffset: isTriggered ? 0 : 1 }}
                   transition={{ duration: 2, ease: "easeInOut" }}
                 />
                 <motion.circle 
                   cx="100" cy="5" r="2" fill="#111111"
                   initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, amount: 0.5 }}
+                  animate={{ opacity: isTriggered ? 1 : 0, scale: isTriggered ? 1 : 0 }}
                   transition={{ delay: 1.8, duration: 0.4 }}
                 />
               </svg>

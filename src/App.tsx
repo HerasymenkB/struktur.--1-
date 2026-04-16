@@ -157,7 +157,7 @@ const Navbar = ({ lang, setLang }: { lang: Language, setLang: (l: Language) => v
               href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services."
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:block bg-brand-dark text-white px-6 py-2.5 rounded-full text-xs font-bold hover:opacity-90 transition-opacity inline-block text-center"
+              className="hidden md:inline-block bg-brand-dark text-white px-6 py-2.5 rounded-full text-xs font-bold hover:opacity-90 transition-opacity text-center"
             >
               {t.cta}
             </a>
@@ -474,11 +474,35 @@ const ConversionLogic = ({ lang }: { lang: Language }) => {
   );
 };
 
+const GrowthSystem = ({ lang }: { lang: Language }) => {
+  const t = translations[lang].growthSystem;
+  return (
+    <section className="py-16 md:py-24 px-6 bg-white rounded-[32px] md:rounded-[40px] mx-4 md:mx-6 mb-16 md:mb-24 border border-black/5">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12 md:mb-16">
+          <div className="text-[9px] md:text-[10px] tracking-[0.2em] font-bold text-black/30 uppercase mb-6">{t.tag}</div>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6 max-w-3xl mx-auto leading-[1.15] md:leading-[1.1]">{t.title}</h2>
+          <p className="text-black/50 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">{t.subtitle}</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {t.items.map((item: any, i: number) => (
+            <div key={i} className="bg-brand-gray p-8 md:p-12 rounded-[24px] md:rounded-[32px] border border-black/5 flex flex-col items-start transition-colors hover:border-black/10">
+              <h3 className="text-xl md:text-2xl font-bold mb-4">{item.title}</h3>
+              <p className="text-xs md:text-sm text-black/60 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Services = ({ lang }: { lang: Language }) => {
   const t = translations[lang].services;
   const icons = [<Globe size={20} />, <Instagram size={20} />, <Search size={20} />, <ShieldCheck size={20} />];
   return (
-    <section id="services" className="py-16 md:py-24 px-6">
+    <section id="services" className="pt-2 md:pt-4 pb-12 md:pb-16 px-6">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-[9px] md:text-[10px] tracking-[0.2em] font-bold text-black/30 uppercase mb-8 md:mb-12 text-center md:text-left">{t.tag}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -501,7 +525,7 @@ const Process = ({ lang }: { lang: Language }) => {
   const t = translations[lang].process;
   const { ref: pathRef, isTriggered } = useGraphAnimation<HTMLDivElement>();
   return (
-    <section id="process" className="py-16 md:py-24 px-6">
+    <section id="process" className="py-10 md:py-16 px-6">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 md:gap-16 items-start">
         <div>
           <div className="text-[9px] md:text-[10px] tracking-[0.2em] font-bold text-black/30 uppercase mb-6">{t.tag}</div>
@@ -883,6 +907,7 @@ const Home = ({ lang }: { lang: Language }) => (
     <Problem lang={lang} />
     <ConversionLogic lang={lang} />
     <Services lang={lang} />
+    <GrowthSystem lang={lang} />
     <Process lang={lang} />
     <WhatYouGet lang={lang} />
     <Cases lang={lang} />

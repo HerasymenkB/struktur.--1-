@@ -51,6 +51,16 @@ export const translations = {
         { title: 'Full Support', desc: '24/7 monitoring, security updates, and monthly performance reporting.' }
       ]
     },
+    growthSystem: {
+      tag: "GROWTH SYSTEM",
+      title: "We don’t just build websites — we bring clients to them.",
+      subtitle: "High-conversion websites combined with targeted traffic systems designed to generate real leads — not just views.",
+      items: [
+        { title: 'Short-form Traffic', desc: 'Capture hyper-local attention on TikTok & Reels, instantly transforming viral views into predictable inbound inquiries.' },
+        { title: 'Paid Acquisition', desc: 'Stop paying for empty clicks. We deploy precision ads that put your offer directly in front of customers ready to buy today.' },
+        { title: 'Conversion Flow', desc: 'We engineer a frictionless path from first click to WhatsApp message, ensuring every visitor becomes a tangible lead.' }
+      ]
+    },
     process: {
       tag: "The Protocol",
       title: "How we deliver.",
@@ -299,6 +309,16 @@ export const translations = {
         { title: 'Social Flow', desc: 'Premium-Präsenz auf Instagram und Facebook, die die Qualität Ihrer Marke widerspiegelt.' },
         { title: 'Suchanzeigen', desc: 'Präzise Google Ads Kampagnen, die exakt auf Ihr regionales Einzugsgebiet zielen.' },
         { title: 'Full Support', desc: '24/7 Monitoring, Sicherheits-Updates und monatliche Performance-Berichte.' }
+      ]
+    },
+    growthSystem: {
+      tag: "GROWTH SYSTEM",
+      title: "Wir bauen nicht nur Webseiten — wir bringen Ihnen Kunden.",
+      subtitle: "Hochkonvertierende Webseiten kombiniert mit gezielten Traffic-Systemen, entwickelt um echte Leads zu generieren — nicht nur Klicks.",
+      items: [
+        { title: 'Short-form Traffic', desc: 'Fesseln Sie hyper-lokale Aufmerksamkeit auf TikTok & Reels und verwandeln Sie Views sofort in warme, planbare Anfragen.' },
+        { title: 'Paid Acquisition', desc: 'Bezahlen Sie nicht für Klicks. Wir schalten präzise Werbeanzeigen für genau die Kunden, die heute kaufbereit sind.' },
+        { title: 'Conversion Flow', desc: 'Wir bauen einen reibungslosen Weg vom ersten Klick bis zur WhatsApp-Nachricht. Damit aus jedem Besucher ein echter Lead wird.' }
       ]
     },
     process: {

@@ -24,7 +24,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { motion, animate, useInView, AnimatePresence } from 'motion/react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import * as Slides from './components/PresentationSlides';
 import { translations, Language } from './translations';
 
@@ -118,6 +118,12 @@ const ScrollCounter = Counter;
 const Navbar = ({ lang, setLang }: { lang: Language, setLang: (l: Language) => void }) => {
   const t = translations[lang].nav;
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <div className="fixed top-4 md:top-6 left-0 right-0 z-50 px-4 md:px-6 flex justify-center pointer-events-none">
@@ -129,9 +135,9 @@ const Navbar = ({ lang, setLang }: { lang: Language, setLang: (l: Language) => v
           
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-14 text-xs font-medium text-black/40">
-            <a href="#services" className="hover:text-black transition-colors">{t.services}</a>
-            <a href="#process" className="hover:text-black transition-colors">{t.process}</a>
-            <a href="#work" className="hover:text-black transition-colors">{t.work}</a>
+            <Link to="/" className={`transition-colors ${isActive('/') ? 'text-black' : 'hover:text-black'}`}>{t.home}</Link>
+            <Link to="/services" className={`transition-colors ${isActive('/services') ? 'text-black' : 'hover:text-black'}`}>{t.services}</Link>
+            <Link to="/contact" className={`transition-colors ${isActive('/contact') ? 'text-black' : 'hover:text-black'}`}>{t.contact}</Link>
           </div>
 
           <div className="flex-1 flex items-center justify-end gap-4 md:gap-6">
@@ -182,9 +188,9 @@ const Navbar = ({ lang, setLang }: { lang: Language, setLang: (l: Language) => v
               className="absolute top-full left-0 right-0 mt-4 bg-white/95 backdrop-blur-2xl border border-black/5 rounded-[2rem] p-8 shadow-2xl md:hidden flex flex-col items-center gap-8"
             >
               <div className="flex flex-col items-center gap-6 text-sm font-bold tracking-tight">
-                <a href="#services" onClick={() => setIsOpen(false)} className="text-black/60 hover:text-black">{t.services}</a>
-                <a href="#process" onClick={() => setIsOpen(false)} className="text-black/60 hover:text-black">{t.process}</a>
-                <a href="#work" onClick={() => setIsOpen(false)} className="text-black/60 hover:text-black">{t.work}</a>
+                <Link to="/" onClick={() => setIsOpen(false)} className={`transition-colors ${isActive('/') ? 'text-black' : 'text-black/60 hover:text-black'}`}>{t.home}</Link>
+                <Link to="/services" onClick={() => setIsOpen(false)} className={`transition-colors ${isActive('/services') ? 'text-black' : 'text-black/60 hover:text-black'}`}>{t.services}</Link>
+                <Link to="/contact" onClick={() => setIsOpen(false)} className={`transition-colors ${isActive('/contact') ? 'text-black' : 'text-black/60 hover:text-black'}`}>{t.contact}</Link>
               </div>
               
               <div className="w-full h-px bg-black/5" />
@@ -655,46 +661,84 @@ const Cases = ({ lang }: { lang: Language }) => {
 
 const Pricing = ({ lang }: { lang: Language }) => {
   const t = translations[lang].pricing;
+  const s = translations[lang].services;
   return (
     <section className="py-16 md:py-24 px-6 bg-white rounded-[32px] md:rounded-[40px] mx-4 md:mx-6 mb-16 md:mb-24 border border-black/5">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-12 md:mb-16">{t.title}</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {t.packages.map((pkg, i) => (
-            <div 
-              key={i} 
-              className={`${i === 1 ? 'bg-brand-dark text-white' : 'bg-brand-gray text-black'} p-8 md:p-12 rounded-[24px] md:rounded-[32px] border border-black/5 flex flex-col text-left relative overflow-hidden`}
-            >
-              {pkg.popular && (
-                <div className="absolute top-4 md:top-6 right-4 md:right-6 bg-white text-black text-[8px] md:text-[9px] font-bold uppercase tracking-widest px-2 md:px-3 py-1 rounded-full">
-                  {pkg.popular}
-                </div>
-              )}
-              <div className={`text-[9px] md:text-[10px] font-bold ${i === 1 ? 'text-white/30' : 'text-black/30'} uppercase tracking-widest mb-4`}>
-                {pkg.tag}
-              </div>
-              <h3 className="text-xl md:text-2xl font-bold mb-2">{pkg.title}</h3>
-              <div className="text-2xl md:text-3xl font-bold mb-8">
-                {pkg.price} <span className={`text-xs md:text-sm font-normal ${i === 1 ? 'text-white/40' : 'text-black/40'}`}>{pkg.period}</span>
-              </div>
-              <ul className="space-y-3 md:space-y-4 mb-10 md:mb-12 flex-1">
-                {pkg.features.map((feature, j) => (
-                  <li key={j} className={`flex items-center gap-3 text-xs md:text-sm ${i === 1 ? 'text-white/60' : 'text-black/60'}`}>
-                    <Check size={14} className={i === 1 ? 'text-white' : 'text-black'} /> {feature}
-                  </li>
-                ))}
-              </ul>
-              <a 
-                href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services."
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-full py-4 rounded-full border ${i === 1 ? 'bg-white text-black border-transparent hover:opacity-90' : 'border-black/10 hover:bg-black/5'} font-bold text-xs md:text-sm transition-all block text-center`}
-              >
-                {pkg.cta}
-              </a>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          {/* Tier 1 - Starter */}
+          <div className="bg-brand-gray p-8 md:p-12 rounded-[24px] md:rounded-[32px] border border-black/5 flex flex-col h-full hover:border-black/20 transition-all duration-300 transform hover:-translate-y-1 text-left">
+            <div className="text-[9px] md:text-[10px] font-bold text-black/30 uppercase tracking-widest mb-4">
+              {s.packages.tier1.label}
             </div>
-          ))}
+            <h3 className="text-xl md:text-2xl font-bold mb-2 text-black tracking-tight">{s.packages.tier1.title}</h3>
+            <p className="text-black/50 text-sm mb-8 leading-relaxed min-h-[40px]">{s.packages.tier1.desc}</p>
+            <div className="w-full h-px bg-black/5 mb-8" />
+            
+            <ul className="space-y-3 md:space-y-4 mb-10 md:mb-12 flex-1">
+              {s.packages.tier1.features.map((feature: string, idx: number) => (
+                <li key={idx} className="flex items-center gap-3 text-xs md:text-sm text-black/60">
+                  <Check size={14} className="text-black shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            
+            <a href="https://wa.me/4916091465087" target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-full border border-black/10 hover:bg-black/5 font-bold text-xs md:text-sm transition-all block text-center text-black">
+              {s.packages.tier1.cta}
+            </a>
+          </div>
+
+          {/* Tier 2 - Client System */}
+          <div className="bg-brand-dark p-8 md:p-12 rounded-[24px] md:rounded-[32px] border border-white/5 flex flex-col relative md:-translate-y-6 shadow-2xl shadow-black/20 z-10 hover:-translate-y-8 transition-all duration-300 text-left">
+            <div className="absolute top-6 md:top-8 right-6 md:right-8">
+              <div className="px-3 py-1 bg-white text-black text-[8px] md:text-[9px] font-bold uppercase tracking-widest rounded-full">{s.packages.tier2.badge}</div>
+            </div>
+            <div className="text-[9px] md:text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">
+              {s.packages.tier2.label}
+            </div>
+            <h3 className="text-xl md:text-2xl font-bold mb-2 text-white tracking-tight">{s.packages.tier2.title}</h3>
+            <p className="text-white/50 text-sm mb-8 leading-relaxed min-h-[40px]">{s.packages.tier2.desc}</p>
+            <div className="w-full h-px bg-white/10 mb-8" />
+            
+            <ul className="space-y-3 md:space-y-4 mb-10 md:mb-12 flex-1">
+              {s.packages.tier2.features.map((feature: string, idx: number) => (
+                <li key={idx} className="flex items-center gap-3 text-xs md:text-sm text-white/60">
+                  <Check size={14} className="text-white shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            
+            <a href="https://wa.me/4916091465087" target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-full bg-white text-black border-transparent hover:opacity-90 font-bold text-xs md:text-sm transition-all block text-center">
+              {s.packages.tier2.cta}
+            </a>
+          </div>
+
+          {/* Tier 3 - Growth System */}
+          <div className="bg-brand-gray p-8 md:p-12 rounded-[24px] md:rounded-[32px] border border-black/5 flex flex-col h-full hover:border-black/20 transition-all duration-300 transform hover:-translate-y-1 text-left">
+            <div className="text-[9px] md:text-[10px] font-bold text-black/30 uppercase tracking-widest mb-4">
+              {s.packages.tier3.label}
+            </div>
+            <h3 className="text-xl md:text-2xl font-bold mb-2 text-black tracking-tight">{s.packages.tier3.title}</h3>
+            <p className="text-black/50 text-sm mb-8 leading-relaxed min-h-[40px]">{s.packages.tier3.desc}</p>
+            <div className="w-full h-px bg-black/5 mb-8" />
+            
+            <ul className="space-y-3 md:space-y-4 mb-10 md:mb-12 flex-1">
+              {s.packages.tier3.features.map((feature: string, idx: number) => (
+                <li key={idx} className="flex items-center gap-3 text-xs md:text-sm text-black/60">
+                  <Check size={14} className="text-black shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            
+            <a href="https://wa.me/4916091465087" target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-full border border-black/10 hover:bg-black/5 font-bold text-xs md:text-sm transition-all block text-center text-black">
+              {s.packages.tier3.cta}
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -748,9 +792,9 @@ const Footer = ({ lang }: { lang: Language }) => {
           <div>
             <h3 className="text-[9px] md:text-[10px] font-bold text-black/30 uppercase tracking-widest mb-4 md:mb-6">{t.nav}</h3>
             <ul className="space-y-3 md:space-y-4 text-xs md:text-sm font-medium">
-              <li><a href="#services" className="hover:text-brand-accent transition-colors">{n.services}</a></li>
-              <li><a href="#work" className="hover:text-brand-accent transition-colors">{n.work}</a></li>
-              <li><a href="#process" className="hover:text-brand-accent transition-colors">{n.process}</a></li>
+              <li><Link to="/" className="hover:text-brand-accent transition-colors">{n.home}</Link></li>
+              <li><Link to="/services" className="hover:text-brand-accent transition-colors">{n.services}</Link></li>
+              <li><Link to="/contact" className="hover:text-brand-accent transition-colors">{n.contact}</Link></li>
             </ul>
           </div>
 
@@ -901,6 +945,379 @@ const Presentation = ({ lang }: { lang: Language }) => {
   );
 };
 
+const ServicesPage = ({ lang }: { lang: Language }) => {
+  const s = translations[lang]?.services || translations.en.services;
+
+  const getWaLink = (serviceTitle: string) => {
+    const message = s.additional.waMessage.replace('{service}', serviceTitle);
+    return `https://wa.me/4916091465087?text=${encodeURIComponent(message)}`;
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-[#F9F9FB]">
+      <style dangerouslySetInnerHTML={{ __html: `
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.1em;
+        }
+        .hover-card-shadow:hover {
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.08);
+        }
+      `}} />
+      
+      {/* Header */}
+      <header className="pt-56 pb-24 px-6 text-center max-w-[900px] mx-auto w-full">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[9px] md:text-[10px] font-bold text-black/30 uppercase tracking-widest mb-6"
+          >
+            {s.hero.label}
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-5xl md:text-7xl font-extrabold leading-[1.08] mb-8 text-black max-w-[800px] mx-auto tracking-[-0.04em]"
+          >
+            {s.hero.title}
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-[#636366] max-w-[520px] mx-auto leading-relaxed"
+          >
+            {s.hero.subtitle}
+          </motion.p>
+      </header>
+
+      {/* Pricing Tiers */}
+      <section className="max-w-[1100px] w-full mx-auto px-6 md:px-10 pb-32">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch mb-16">
+              
+              {/* Tier 1 - Starter */}
+              <div className="bg-brand-gray p-8 md:p-12 rounded-[24px] md:rounded-[32px] border border-black/5 flex flex-col h-full hover:border-black/20 transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="text-[9px] md:text-[10px] font-bold text-black/30 uppercase tracking-normal mb-4">
+                      {s.packages.tier1.label}
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-2 text-black tracking-tight">{s.packages.tier1.title}</h3>
+                  <p className="text-black/50 text-sm mb-8 leading-relaxed min-h-[40px]">{s.packages.tier1.desc}</p>
+                  <div className="w-full h-px bg-black/5 mb-8" />
+                  
+                  <ul className="space-y-3 md:space-y-4 mb-10 md:mb-12 flex-1">
+                      {s.packages.tier1.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-center gap-3 text-xs md:text-sm text-black/60">
+                            <Check size={14} className="text-black shrink-0" />
+                            {feature}
+                        </li>
+                      ))}
+                  </ul>
+                  
+                  <a href="https://wa.me/4916091465087" target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-full border border-black/10 hover:bg-black/5 font-bold text-xs md:text-sm transition-all block text-center text-black">
+                      {s.packages.tier1.cta}
+                  </a>
+              </div>
+
+              {/* Tier 2 - Client System */}
+              <div className="bg-brand-dark p-8 md:p-12 rounded-[24px] md:rounded-[32px] border border-white/5 flex flex-col relative md:-translate-y-6 shadow-2xl shadow-black/20 z-10 hover:-translate-y-8 transition-all duration-300">
+                  <div className="absolute top-6 md:top-8 right-6 md:right-8">
+                      <div className="px-3 py-1 bg-white text-black text-[8px] md:text-[9px] font-bold uppercase tracking-widest rounded-full">{s.packages.tier2.badge}</div>
+                  </div>
+                  <div className="text-[9px] md:text-[10px] font-bold text-white/30 uppercase tracking-widest mb-4">
+                      {s.packages.tier2.label}
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-2 text-white tracking-tight">{s.packages.tier2.title}</h3>
+                  <p className="text-white/50 text-sm mb-8 leading-relaxed min-h-[40px]">{s.packages.tier2.desc}</p>
+                  <div className="w-full h-px bg-white/10 mb-8" />
+                  
+                  <ul className="space-y-3 md:space-y-4 mb-10 md:mb-12 flex-1">
+                      {s.packages.tier2.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-center gap-3 text-xs md:text-sm text-white/60">
+                            <Check size={14} className="text-white shrink-0" />
+                            {feature}
+                        </li>
+                      ))}
+                  </ul>
+                  
+                  <a href="https://wa.me/4916091465087" target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-full bg-white text-black border-transparent hover:opacity-90 font-bold text-xs md:text-sm transition-all block text-center">
+                      {s.packages.tier2.cta}
+                  </a>
+              </div>
+
+              {/* Tier 3 - Growth System */}
+              <div className="bg-brand-gray p-8 md:p-12 rounded-[24px] md:rounded-[32px] border border-black/5 flex flex-col h-full hover:border-black/20 transition-all duration-300 transform hover:-translate-y-1">
+                  <div className="text-[9px] md:text-[10px] font-bold text-black/30 uppercase tracking-normal mb-4">
+                      {s.packages.tier3.label}
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-2 text-black tracking-tight">{s.packages.tier3.title}</h3>
+                  <p className="text-black/50 text-sm mb-8 leading-relaxed min-h-[40px]">{s.packages.tier3.desc}</p>
+                  <div className="w-full h-px bg-black/5 mb-8" />
+                  
+                  <ul className="space-y-3 md:space-y-4 mb-10 md:mb-12 flex-1">
+                      {s.packages.tier3.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-center gap-3 text-xs md:text-sm text-black/60">
+                            <Check size={14} className="text-black shrink-0" />
+                            {feature}
+                        </li>
+                      ))}
+                  </ul>
+                  
+                  <a href="https://wa.me/4916091465087" target="_blank" rel="noopener noreferrer" className="w-full py-4 rounded-full border border-black/10 hover:bg-black/5 font-bold text-xs md:text-sm transition-all block text-center text-black">
+                      {s.packages.tier3.cta}
+                  </a>
+              </div>
+
+          </div>
+
+          {/* Transparency Note */}
+          <div className="text-center">
+              <p className="text-[9px] md:text-[10px] font-bold uppercase text-black/30 tracking-widest leading-relaxed max-w-[600px] mx-auto">
+                  {s.packages.scope}
+              </p>
+          </div>
+      </section>
+
+      {/* Additional Services Title */}
+      <div className="max-w-[1280px] w-full mx-auto px-6 md:px-10 mb-16 text-center">
+          <div className="text-[9px] md:text-[10px] font-bold text-black/30 uppercase tracking-widest mb-4">{s.additional.label}</div>
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-black tracking-[-0.04em]">{s.additional.title}</h2>
+          <p className="text-[#636366] text-lg max-w-[500px] mx-auto">{s.additional.subtitle}</p>
+      </div>
+
+      {/* Other Services Grid */}
+      <section className="max-w-[1280px] w-full mx-auto px-6 md:px-10 pb-40">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+              
+              <div className="group bg-white p-7 rounded-[24px] border border-[rgba(0,0,0,0.05)] hover-card-shadow transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                  <div className="w-12 h-12 bg-[#F9F9FB] rounded-[14px] flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors text-black">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  </div>
+                  <h4 className="font-bold text-lg mb-2 text-black leading-tight tracking-[-0.04em]">{s.additional.items.image.title}</h4>
+                  <p className="text-[14px] text-[#636366] leading-relaxed flex-1">{s.additional.items.image.desc}</p>
+                  <a href={getWaLink(s.additional.items.image.title)} target="_blank" rel="noopener noreferrer" className="mt-6 text-[11px] font-medium text-black/30 group-hover:text-black transition-colors inline-block">{s.additional.link}</a>
+              </div>
+
+              <div className="group bg-white p-7 rounded-[24px] border border-[rgba(0,0,0,0.05)] hover-card-shadow transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                  <div className="w-12 h-12 bg-[#F9F9FB] rounded-[14px] flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors text-black">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                  </div>
+                  <h4 className="font-bold text-lg mb-2 text-black leading-tight tracking-[-0.04em]">{s.additional.items.social.title}</h4>
+                  <p className="text-[14px] text-[#636366] leading-relaxed flex-1">{s.additional.items.social.desc}</p>
+                  <a href={getWaLink(s.additional.items.social.title)} target="_blank" rel="noopener noreferrer" className="mt-6 text-[11px] font-medium text-black/30 group-hover:text-black transition-colors inline-block">{s.additional.link}</a>
+              </div>
+
+              <div className="group bg-white p-7 rounded-[24px] border border-[rgba(0,0,0,0.05)] hover-card-shadow transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                  <div className="w-12 h-12 bg-[#F9F9FB] rounded-[14px] flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors text-black">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  </div>
+                  <h4 className="font-bold text-lg mb-2 text-black leading-tight tracking-[-0.04em]">{s.additional.items.marketing.title}</h4>
+                  <p className="text-[14px] text-[#636366] leading-relaxed flex-1">{s.additional.items.marketing.desc}</p>
+                  <a href={getWaLink(s.additional.items.marketing.title)} target="_blank" rel="noopener noreferrer" className="mt-6 text-[11px] font-medium text-black/30 group-hover:text-black transition-colors inline-block">{s.additional.link}</a>
+              </div>
+
+              <div className="group bg-white p-7 rounded-[24px] border border-[rgba(0,0,0,0.05)] hover-card-shadow transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                  <div className="w-12 h-12 bg-[#F9F9FB] rounded-[14px] flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors text-black">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                  </div>
+                  <h4 className="font-bold text-lg mb-2 text-black leading-tight tracking-[-0.04em]">{s.additional.items.brand.title}</h4>
+                  <p className="text-[14px] text-[#636366] leading-relaxed flex-1">{s.additional.items.brand.desc}</p>
+                  <a href={getWaLink(s.additional.items.brand.title)} target="_blank" rel="noopener noreferrer" className="mt-6 text-[11px] font-medium text-black/30 group-hover:text-black transition-colors inline-block">{s.additional.link}</a>
+              </div>
+
+              <div className="group bg-white p-7 rounded-[24px] border border-[rgba(0,0,0,0.05)] hover-card-shadow transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                  <div className="w-12 h-12 bg-[#F9F9FB] rounded-[14px] flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors text-black">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                  </div>
+                  <h4 className="font-bold text-lg mb-2 text-black leading-tight tracking-[-0.04em]">{s.additional.items.security.title}</h4>
+                  <p className="text-[14px] text-[#636366] leading-relaxed flex-1">{s.additional.items.security.desc}</p>
+                  <a href={getWaLink(s.additional.items.security.title)} target="_blank" rel="noopener noreferrer" className="mt-6 text-[11px] font-medium text-black/30 group-hover:text-black transition-colors inline-block">{s.additional.link}</a>
+              </div>
+
+          </div>
+      </section>
+
+      {/* Selected Cases */}
+      <Cases lang={lang} />
+
+      {/* Final CTA */}
+      <section className="border-t border-[rgba(0,0,0,0.06)] py-32 text-center px-6 mt-auto">
+          <div className="mono text-[11px] text-[#636366] uppercase mb-8 font-medium">{s.cta.label}</div>
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-6 text-black tracking-tight leading-tight tracking-[-0.04em]">{s.cta.title}</h2>
+          <p className="text-lg text-[#636366] mb-12 max-w-[420px] mx-auto leading-relaxed">{s.cta.subtitle}</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services." target="_blank" rel="noopener noreferrer" className="bg-black text-white px-10 py-5 rounded-full font-bold hover:opacity-90 transition-opacity w-full sm:w-auto inline-block text-center shadow-lg shadow-black/10">{s.cta.primary}</a>
+              <a href="https://wa.me/4916091465087?text=Hello%2C%20I’m%20interested%20in%20your%20services." target="_blank" rel="noopener noreferrer" className="bg-white border border-black/10 text-black px-10 py-5 rounded-full font-bold hover:bg-black/5 transition-colors w-full sm:w-auto inline-block text-center">
+                  {s.cta.secondary}
+              </a>
+          </div>
+      </section>
+    </div>
+  );
+};
+
+const ContactPage = ({ lang }: { lang: Language }) => {
+  const c = translations[lang]?.contact || translations.en.contact;
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-[#F5F5F7]">
+      {/* Hero Section */}
+      <section className="pt-[200px] pb-[80px] text-center px-6 md:px-10">
+          <div className="max-w-[1100px] mx-auto">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-[9px] md:text-[10px] uppercase tracking-normal font-bold text-black/30 mb-8"
+              >
+                {c.hero.title}
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-[48px] md:text-[68px] font-extrabold tracking-tighter leading-[1.08] max-w-[900px] mx-auto mb-7 text-black"
+              >
+                {c.hero.subtitle}
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-[18px] md:text-[20px] text-[#636366] max-w-[520px] mx-auto mb-12 leading-relaxed"
+              >
+                {c.hero.description}
+              </motion.p>
+
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6"
+              >
+                  <a href="https://wa.me/4916091465087" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-8 py-4 bg-brand-dark text-white rounded-full font-medium hover:opacity-90 transition-opacity w-full sm:w-auto text-center">
+                      <svg className="w-5 h-5 mr-2.5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+                      </svg>
+                      {c.actions.whatsapp}
+                  </a>
+                  <a href="mailto:hello@struktur.agency" className="inline-flex items-center justify-center px-8 py-4 bg-white text-black rounded-full font-medium border border-black/5 hover:bg-black/5 transition-colors w-full sm:w-auto text-center">
+                      {c.actions.email}
+                  </a>
+              </motion.div>
+              
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="inline-flex items-center justify-center gap-2 text-sm text-[#636366] font-medium"
+              >
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                  </span>
+                  {c.actions.fastest}
+              </motion.div>
+          </div>
+      </section>
+
+
+
+      {/* Contact Cards Grid */}
+      <section className="pb-[120px] px-6 md:px-10">
+          <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7">
+              
+              {/* WhatsApp Card */}
+              <a href="https://wa.me/4916091465087" target="_blank" rel="noopener noreferrer" className="group bg-white p-10 rounded-[24px] border border-[rgba(0,0,0,0.06)] hover-card-shadow transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                  <div className="text-[9px] md:text-[10px] uppercase tracking-normal font-bold text-black/30 mb-6">{c.cards.messaging.label}</div>
+                  <div className="w-12 h-12 bg-[#F9F9FB] rounded-[14px] flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors text-black">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                  </div>
+                  <h3 className="text-[18px] font-bold mb-2 text-black leading-tight tracking-[-0.04em]">{c.cards.messaging.title}</h3>
+                  <p className="text-[15px] text-[#636366] mb-8 flex-grow">+49 160 91465087</p>
+                  <div className="text-[11px] font-medium text-black/40 group-hover:text-black transition-colors mt-auto flex items-center">
+                      {c.cards.messaging.button} 
+                      <svg className="w-3.5 h-3.5 ml-1.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                  </div>
+              </a>
+
+              <a href="mailto:hello@struktur.agency" className="group bg-white p-10 rounded-[24px] border border-[rgba(0,0,0,0.06)] hover-card-shadow transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                  <div className="text-[9px] md:text-[10px] uppercase tracking-normal font-bold text-black/30 mb-6">{c.cards.email.label}</div>
+                  <div className="w-12 h-12 bg-[#F9F9FB] rounded-[14px] flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors text-black">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                  </div>
+                  <h3 className="text-[18px] font-bold mb-2 text-black leading-tight tracking-[-0.04em]">{c.cards.email.title}</h3>
+                  <p className="text-[15px] text-[#636366] mb-8 flex-grow break-all font-medium">hello@struktur.agency</p>
+                  <div className="text-[11px] font-medium text-black/40 group-hover:text-black transition-colors mt-auto flex items-center">
+                      {c.cards.email.button} 
+                      <svg className="w-3.5 h-3.5 ml-1.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                  </div>
+              </a>
+
+              <a href="#" className="group bg-white p-10 rounded-[24px] border border-[rgba(0,0,0,0.06)] hover-card-shadow transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full">
+                  <div className="text-[9px] md:text-[10px] uppercase tracking-normal font-bold text-black/30 mb-6">{c.cards.work.label}</div>
+                  <div className="w-12 h-12 bg-[#F9F9FB] rounded-[14px] flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors text-black">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg>
+                  </div>
+                  <h3 className="text-[18px] font-bold mb-2 text-black leading-tight tracking-[-0.04em]">{c.cards.work.title}</h3>
+                  <p className="text-[15px] text-[#636366] mb-8 flex-grow">@struktur.agency</p>
+                  <div className="text-[11px] font-medium text-black/40 group-hover:text-black transition-colors mt-auto flex items-center">
+                      {c.cards.work.button} 
+                      <svg className="w-3.5 h-3.5 ml-1.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                  </div>
+              </a>
+
+              <div className="group bg-white p-10 rounded-[24px] border border-[rgba(0,0,0,0.06)] hover-card-shadow transition-all duration-300 transform hover:-translate-y-1 cursor-pointer flex flex-col h-full relative overflow-hidden">
+                  <div className="text-[9px] md:text-[10px] uppercase tracking-normal font-bold text-black/30 mb-6 relative z-10">{c.cards.location.label}</div>
+                  <div className="w-12 h-12 bg-[#F9F9FB] rounded-[14px] flex items-center justify-center mb-6 group-hover:bg-black group-hover:text-white transition-colors text-black relative z-10">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  </div>
+                  <h3 className="text-[18px] font-bold mb-2 relative z-10 text-black leading-tight tracking-[-0.04em]">{c.cards.location.title}</h3>
+                  <p className="text-[15px] text-[#636366] mb-8 relative z-10">Torstraße 123<br />10119 Berlin</p>
+
+                  <div className="text-[11px] font-medium text-black/40 group-hover:text-black transition-colors mt-auto relative z-10 flex items-center">
+                      {c.cards.location.button} 
+                      <svg className="w-3.5 h-3.5 ml-1.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                  </div>
+              </div>
+
+          </div>
+      </section>
+
+      {/* Next Steps CTA */}
+      <section className="max-w-[1100px] mx-auto px-6 md:px-10 mb-[120px]">
+          <div className="bg-[#111111] rounded-[32px] py-[100px] md:py-[120px] px-8 text-center relative overflow-hidden border border-white/5">
+              <div className="max-w-[800px] mx-auto relative z-10">
+                  <div className="mono text-[10px] uppercase tracking-[0.2em] text-white/40 mb-6 border border-white/10 inline-block px-4 py-1.5 rounded-full">{c.nextSteps.tag}</div>
+                  <h2 className="text-[40px] md:text-[56px] font-extrabold text-white tracking-tighter leading-[1.1] mb-6">{c.nextSteps.title}</h2>
+                  <p className="text-[18px] md:text-[20px] text-white/50 mb-10 max-w-[480px] mx-auto">{c.nextSteps.subtitle}</p>
+                  
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                      <a href="https://wa.me/4916091465087" target="_blank" rel="noopener noreferrer" className="bg-white text-black px-10 py-5 rounded-full font-bold hover:opacity-90 transition-opacity w-full sm:w-auto inline-block text-center shadow-xl shadow-black/20">
+                          {c.nextSteps.primary}
+                      </a>
+                      <a href="#" className="bg-white/10 backdrop-blur-md text-white px-10 py-5 rounded-full font-bold hover:bg-white/20 transition-colors w-full sm:w-auto inline-block text-center">
+                          {c.nextSteps.secondary}
+                      </a>
+                  </div>
+              </div>
+              
+              <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none rounded-[32px]">
+                  <div className="absolute -top-[50%] -left-[10%] w-[70%] h-[150%] bg-white/[0.02] blur-[120px] rounded-full mix-blend-overlay"></div>
+                  <div className="absolute -bottom-[50%] -right-[10%] w-[60%] h-[120%] bg-white/[0.02] blur-[100px] rounded-full mix-blend-overlay"></div>
+              </div>
+          </div>
+      </section>
+    </div>
+  );
+};
+
 const Home = ({ lang }: { lang: Language }) => (
   <>
     <Hero lang={lang} />
@@ -917,7 +1334,7 @@ const Home = ({ lang }: { lang: Language }) => (
 );
 
 export default function App() {
-  const [lang, setLang] = useState<Language>('de');
+  const [lang, setLang] = useState<Language>('en');
 
   return (
     <BrowserRouter>
@@ -926,6 +1343,8 @@ export default function App() {
         <main>
           <Routes>
             <Route path="/" element={<Home lang={lang} />} />
+            <Route path="/services" element={<ServicesPage lang={lang} />} />
+            <Route path="/contact" element={<ContactPage lang={lang} />} />
             <Route path="/presentation" element={<Presentation lang={lang} />} />
           </Routes>
         </main>

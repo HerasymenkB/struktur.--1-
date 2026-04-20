@@ -3,9 +3,9 @@ export type Language = 'en' | 'de';
 export const translations = {
   en: {
     nav: {
+      home: "Home",
       services: "Services",
-      process: "Process",
-      work: "Work",
+      contact: "Contact",
       cta: "Get Started"
     },
     hero: {
@@ -47,10 +47,86 @@ export const translations = {
       items: [
         { title: 'Web Systems', desc: 'Custom-built responsive environments optimized for local SEO and lead capture.' },
         { title: 'Social Flow', desc: 'Premium Instagram and Facebook presence that mirrors your brand\'s quality.' },
-        { title: 'Search Ads', desc: 'Google Ads campaigns precisely targeted to your immediate geographic area.' },
+        { title: 'Search Ads', desc: 'Google Ads campaigns precisely targeted to your geographic area.' },
         { title: 'Full Support', desc: '24/7 monitoring, security updates, and monthly performance reporting.' }
-      ]
+      ],
+      hero: {
+        label: "Services",
+        title: "All services built for one goal — getting you clients.",
+        subtitle: "Start with a complete system or choose individual services to seamlessly upgrade your setup."
+      },
+      packages: {
+        tier1: {
+          label: "STARTER",
+          title: "Starter",
+          desc: "A clean landing page for a fast and simple launch.",
+          features: ["Custom Landing Page", "Mobile-First Design", "Basic SEO Structure", "1 Round of Revisions"],
+          cta: "Select Starter"
+        },
+        tier2: {
+          label: "CLIENT SYSTEM",
+          badge: "Recommended",
+          title: "Client System",
+          desc: "A conversion-focused system to turn visitors into clients.",
+          features: ["Premium Website Build", "WhatsApp / Contact Flow Setup", "Automated Lead Funnel", "2 Rounds of Revisions"],
+          cta: "Book Consultation"
+        },
+        tier3: {
+          label: "GROWTH",
+          title: "Growth System",
+          desc: "An advanced setup to scale and streamline acquisition.",
+          features: ["Multi-page Authority Site", "Omni-channel Campaign Structure", "Custom CRM Integration", "Priority Support"],
+          cta: "Apply Now"
+        },
+        scope: "Additional revisions or requests outside the agreed scope are billed separately."
+      },
+      additional: {
+        label: "Other Services",
+        title: "Add extra capabilities to your setup",
+        subtitle: "Specialized services to enhance your system and support your growth.",
+        link: "Ask about this →",
+        waMessage: "Hi, I’m interested in your {service} service. I’d like to get more details.",
+        items: {
+          image: { title: "Image Creation", desc: "AI-generated visuals tailored to your brand identity and campaigns." },
+          social: { title: "Social Media Visual Content", desc: "High-quality visuals for consistent and engaging social media presence." },
+          marketing: { title: "Marketing Images", desc: "Product and campaign visuals designed for ads, websites, and promotions." },
+          brand: { title: "AI Brand Identity Visuals", desc: "A cohesive visual style system built using AI tools and brand direction." },
+          security: { title: "Website Security Check", desc: "Basic audit to ensure your site and customer data are protected." }
+        }
+      },
+      cta: {
+        label: "Expert Advice",
+        title: "Not sure what you need?",
+        subtitle: "We'll analyze your current setup and recommend the best system to reach your growth targets.",
+        primary: "Free consultation",
+        secondary: "WhatsApp"
+      }
     },
+    contact: {
+        hero: {
+          title: "Contact",
+          subtitle: "Start a conversation",
+          description: "We usually respond within 2 hours. Choose the fastest way to get in touch below."
+        },
+        actions: {
+          whatsapp: "Chat on WhatsApp",
+          email: "Email Us",
+          fastest: "Fastest response: WhatsApp (usually under 30 min)"
+        },
+        cards: {
+          messaging: { label: "Priority", title: "Instant messaging", button: "Open WhatsApp" },
+          email: { label: "Direct", title: "Detailed inquiries", button: "Send email" },
+          work: { label: "Social", title: "See our work", button: "View profile" },
+          location: { label: "HQ", title: "Berlin Office", button: "Get directions" }
+        },
+        nextSteps: {
+          tag: "Next Steps",
+          title: "Ready to grow your business?",
+          subtitle: "Get your high-performance business system live in just 7 days.",
+          primary: "Start on WhatsApp",
+          secondary: "Book Free Call"
+        }
+      },
     growthSystem: {
       tag: "GROWTH SYSTEM",
       title: "We don’t just build websites — we bring clients to them.",
@@ -258,14 +334,14 @@ export const translations = {
           ctas: ["WhatsApp Us", "Email Us", "Instagram"],
           notes: "That's the overview. The next step is simple. Let's have a brief chat about your specific business and see which approach makes sense. You can reach us right now on WhatsApp to get started."
         }
-      }
+      },
     }
   },
   de: {
     nav: {
+      home: "Start",
       services: "Leistungen",
-      process: "Ablauf",
-      work: "Referenzen",
+      contact: "Kontakt",
       cta: "Jetzt anfragen"
     },
     hero: {
@@ -309,8 +385,84 @@ export const translations = {
         { title: 'Social Flow', desc: 'Premium-Präsenz auf Instagram und Facebook, die die Qualität Ihrer Marke widerspiegelt.' },
         { title: 'Suchanzeigen', desc: 'Präzise Google Ads Kampagnen, die exakt auf Ihr regionales Einzugsgebiet zielen.' },
         { title: 'Full Support', desc: '24/7 Monitoring, Sicherheits-Updates und monatliche Performance-Berichte.' }
-      ]
+      ],
+      hero: {
+        label: "Leistungen",
+        title: "Alle Leistungen mit einem Ziel — mehr Kunden für Ihr Business.",
+        subtitle: "Starten Sie mit einem kompletten System oder wählen Sie einzelne Leistungen, um Ihr Setup gezielt zu erweitern."
+      },
+      packages: {
+        tier1: {
+          label: "STARTER",
+          title: "Starter",
+          desc: "Eine klare Landingpage für einen schnellen und einfachen Start.",
+          features: ["Individuelle Landingpage", "Mobile-First Design", "Grundlegende SEO-Struktur", "1 Korrekturrunde"],
+          cta: "Starter wählen"
+        },
+        tier2: {
+          label: "CLIENT SYSTEM",
+          badge: "EMPFOHLEN",
+          title: "Client System",
+          desc: "Ein fokussiertes System, das Besucher in Anfragen verwandelt.",
+          features: ["Premium Website", "WhatsApp- / Kontakt-Setup", "Automatisierter Lead-Flow", "2 Korrekturrunden"],
+          cta: "Beratung buchen"
+        },
+        tier3: {
+          label: "GROWTH",
+          title: "Growth System",
+          desc: "Ein erweitertes Setup für Wachstum und strukturierte Kundengewinnung.",
+          features: ["Autoritäts-Website mit mehreren Seiten", "Omnichannel-Kampagnenstruktur", "CRM-Integration", "Priorisierter Support"],
+          cta: "Jetzt anfragen"
+        },
+        scope: "Zusätzliche Korrekturen oder Leistungen außerhalb des vereinbarten Umfangs werden separat berechnet."
+      },
+      additional: {
+        label: "Weitere Leistungen",
+        title: "Erweitern Sie Ihr Setup mit zusätzlichen Leistungen",
+        subtitle: "Spezialisierte Leistungen zur Ergänzung Ihres Systems und zur Unterstützung Ihres Wachstums.",
+        link: "Mehr dazu →",
+        waMessage: "Hallo, ich interessiere mich für Ihre Leistung {service}. Ich hätte gerne mehr Details.",
+        items: {
+          image: { title: "Image Creation", desc: "KI-generierte Visuals, abgestimmt auf Ihre Marke und Kampagnen." },
+          social: { title: "Social Media Visual Content", desc: "Hochwertige Visuals für einen starken und konsistenten Social-Media-Auftritt." },
+          marketing: { title: "Marketing Images", desc: "Produkt- und Kampagnenvisuals für Ads, Websites and Promotions." },
+          brand: { title: "AI Brand Identity Visuals", desc: "Ein konsistentes visuelles Markensystem mit Unterstützung durch KI-Tools." },
+          security: { title: "Website Security Check", desc: "Basisprüfung zum Schutz Ihrer Website und Kundendaten." }
+        }
+      },
+      cta: {
+        label: "EXPERTENBERATUNG",
+        title: "Nicht sicher, was Sie brauchen?",
+        subtitle: "Wir analysieren Ihr aktuelles Setup und empfehlen das passende System für Ihr Wachstum.",
+        primary: "Kostenlose Beratung",
+        secondary: "WhatsApp"
+      }
     },
+    contact: {
+        hero: {
+          title: "Kontakt",
+          subtitle: "Starten Sie ein Gespräch",
+          description: "Wir antworten in der Regel innerhalb von 2 Stunden. Wählen Sie unten den schnellsten Weg, um mit uns in Kontakt zu treten."
+        },
+        actions: {
+          whatsapp: "Chat über WhatsApp",
+          email: "E-Mail senden",
+          fastest: "Schnellste Antwort: WhatsApp (meist unter 30 Minuten)"
+        },
+        cards: {
+          messaging: { label: "Priorität", title: "Schnelle Kontaktaufnahme", button: "WhatsApp öffnen" },
+          email: { label: "Direkt", title: "Detaillierte Anfragen", button: "E-Mail senden" },
+          work: { label: "Social", title: "Unsere Arbeiten ansehen", button: "Profil ansehen" },
+          location: { label: "HQ", title: "Büro Berlin", button: "Route anzeigen" }
+        },
+        nextSteps: {
+          tag: "Nächste Schritte",
+          title: "Bereit für Wachstum?",
+          subtitle: "Bringen Sie Ihr Business-System in nur 7 Tagen live.",
+          primary: "Über WhatsApp starten",
+          secondary: "Erstgespräch buchen"
+        }
+      },
     growthSystem: {
       tag: "GROWTH SYSTEM",
       title: "Wir bauen nicht nur Webseiten — wir bringen Ihnen Kunden.",
@@ -518,7 +670,7 @@ export const translations = {
           ctas: ["WhatsApp", "E-Mail", "Instagram"],
           notes: "Das ist der Überblick. Der nächste Schritt ist einfach. Lassen Sie uns kurz über Ihr spezifisches Unternehmen sprechen und sehen, welcher Ansatz Sinn macht. Sie können uns jetzt direkt auf WhatsApp erreichen, um zu starten."
         }
-      }
+      },
     }
   }
 };
